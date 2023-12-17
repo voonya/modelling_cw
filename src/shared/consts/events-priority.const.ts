@@ -1,3 +1,5 @@
 export const FABRIC_ORDER_DELIVERED_PRIORITY = 2;
 export const CREATE_EXIT_EVENT_PRIORITY = 1;
 export const PROCESS_EXIT_EVENT_PRIORITY = 1;
+
+export const CALC_STATS_DELAY = 0;

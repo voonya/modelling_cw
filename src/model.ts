@@ -1,5 +1,7 @@
 import { Element } from './core/element';
 import { Event } from './core/events/base.event';
+import { DefaultStats } from './core/stats/stats.service';
+import { CALC_STATS_DELAY } from './shared/consts/events-priority.const';
 
 export class ModelState {
   resourcesInWholeSaleStore: number;
@@ -15,6 +17,15 @@ export type ModelMiddleware = (
   elements: Element[],
   time: { currentTime: number; nextTime: number },
 ) => void;
+
+export interface ModelSimulateResults {
+  time: number;
+  state: ModelState;
+  stats: {
+    channelName: string;
+    stats: DefaultStats;
+  }[];
+}
 
 export class Model {
   elements: Element[];
@@ -35,7 +46,7 @@ export class Model {
     this.state = structuredClone(initState);
   }
 
-  simulate(timeMs: number) {
+  simulate(timeMs: number): ModelSimulateResults {
     let currentTime = 0;
 
     while (currentTime < timeMs) {
@@ -60,7 +71,7 @@ export class Model {
         break;
       }
 
-      console.log(`\n--Current time: ${currentTime} ${closestTimeNext}`);
+      //console.log(`\n--Current time: ${currentTime} ${closestTimeNext}`);
       const deltaTime = closestTimeNext - currentTime;
 
       for (const element of this.elements) {
@@ -69,44 +80,35 @@ export class Model {
 
       // PROCESS EVENTS
       closestEvents.sort((el1, el2) => el2.event.priority - el1.event.priority);
-      // console.log('LEnth: ' + closestEvents.length);
-      let i = 0;
-
-      // for (const middleware of this.middlewares) {
-      //   middleware(this.networkElements, {
-      //     currentTime,
-      //     nextTime: closestTimeNext,
-      //   });
-      // }
       currentTime = closestTimeNext;
 
       for (const closestEvent of closestEvents) {
-        //console.log(i + ' ' + closestEvent.node.getName());
         closestEvent.node.exit(this.state);
       }
 
-      for (const element of this.elements) {
-        element.calcStatistic(deltaTime, this.state);
+      if (CALC_STATS_DELAY <= currentTime) {
+        for (const element of this.elements) {
+          element.calcStatistic(deltaTime, this.state);
+        }
       }
-
-      // for (const element of this.elements) {
-      //   console.log(
-      //     `${element.getName()} | Stats: ${JSON.stringify(
-      //       element.getStats(currentTime),
-      //     )}`,
-      //   );
-      // }
     }
-    console.log(`State: ${JSON.stringify(this.state)}`);
-    for (const element of this.elements) {
-      console.log(
-        `${element.getName()} | Stats: ${JSON.stringify(
-          element.getStats(currentTime),
-        )}`,
-      );
-    }
+    // console.log(`State: ${JSON.stringify(this.state)}`);
+    // for (const element of this.elements) {
+    //   console.log(
+    //     `${element.getName()} | Stats: ${JSON.stringify(
+    //       element.getStats(currentTime),
+    //     )}`,
+    //   );
+    // }
 
-    //return [];
+    return {
+      time: currentTime,
+      state: this.state,
+      stats: this.elements.map((el) => ({
+        channelName: el.getName(),
+        stats: el.getStats(currentTime),
+      })),
+    };
   }
 
   // public processEvents(events: Event[]) {

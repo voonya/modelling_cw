@@ -1,4 +1,8 @@
-import { StatsService } from '../../core/stats/stats.service';
+import { DefaultStats, StatsService } from '../../core/stats/stats.service';
+
+export interface FabricDeliveryStats extends DefaultStats {
+  avgResourceCount: number;
+}
 
 export class FabricDeliveryStatsService extends StatsService {
   protected _avgResourceCount = 0;
@@ -8,7 +12,7 @@ export class FabricDeliveryStatsService extends StatsService {
     this._avgResourceCount += deltaTime * state.resourcesInWholeSaleStore;
   }
 
-  getStats(currentTime: number) {
+  getStats(currentTime: number): FabricDeliveryStats {
     const stats = super.getStats(currentTime);
 
     return {

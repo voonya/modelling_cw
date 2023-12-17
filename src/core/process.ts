@@ -55,7 +55,8 @@ export class ProcessChannel extends Element {
   }
 
   updateCurrentTime(time: number): void {
-    this._currentTime = time;
+    super.updateCurrentTime(time);
+
     for (const subChannel of this._subChannels) {
       subChannel.updateCurrentTime(time);
     }

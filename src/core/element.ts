@@ -1,6 +1,7 @@
 import { BaseNumberGenerator } from './generators/base.generator';
 import { StatsService, DefaultStats } from './stats/stats.service';
 import { EventFactory, Event } from './events/base.event';
+import { CALC_STATS_DELAY } from '../shared/consts/events-priority.const';
 
 export abstract class Element {
   protected _name = '';
@@ -23,7 +24,7 @@ export abstract class Element {
   ) {
     this._delayGenerator = delayGenerator;
     this._eventFactory = eventFactory;
-    this._statsService = statsService || new StatsService();
+    this._statsService = statsService || new StatsService(CALC_STATS_DELAY);
     this._delayedEvents = [];
     this._queue = [];
   }
@@ -67,6 +68,7 @@ export abstract class Element {
 
   updateCurrentTime(time: number) {
     this._currentTime = time;
+    this._statsService.updateCurrentTime(time);
   }
 
   protected createNextEvent() {
