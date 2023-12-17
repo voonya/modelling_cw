@@ -1,5 +1,4 @@
 import { Element } from './element';
-import { DefaultItem } from './default-item';
 import { ProcessSubChannel } from './sub-process';
 import { EventFactory, Event } from './events/base.event';
 import { ProcessEventFactory } from './events/process-exit.event';

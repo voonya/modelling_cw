@@ -1,5 +1,4 @@
 import { Element } from './element';
-import { DefaultItem } from './default-item';
 import { BaseNumberGenerator } from './generators/base.generator';
 import { ProcessEventFactory } from './events/process-exit.event';
 

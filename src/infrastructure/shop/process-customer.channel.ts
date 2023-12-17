@@ -1,6 +1,5 @@
 import { Element } from '../../core/element';
 import { ProcessEventFactory } from '../../core/events/process-exit.event';
-import { DefaultItem } from '../../core/default-item';
 import { BaseNumberGenerator } from '../../core/generators/base.generator';
 
 export class ProcessCustomer extends Element {

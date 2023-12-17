@@ -1,4 +1,3 @@
-import { DefaultItem } from './default-item';
 import { BaseNumberGenerator } from './generators/base.generator';
 import { StatsService, DefaultStats } from './stats/stats.service';
 import { EventFactory, Event } from './events/base.event';
@@ -12,7 +11,6 @@ export abstract class Element {
   protected _isProcessing = false;
   protected _timeWorking = 0;
   protected _statsService = new StatsService();
-  protected _processingItem: DefaultItem | null;
 
   protected _eventFactory: EventFactory;
   protected _nextElement: Element | null;

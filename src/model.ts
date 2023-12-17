@@ -1,7 +1,4 @@
-//import { CreateNode } from './core/create';
-import { DefaultItem } from './core/default-item';
 import { Element } from './core/element';
-//import { ProcessNodec } from './core/process';
 import { Event } from './core/events/base.event';
 
 export class ModelState {
