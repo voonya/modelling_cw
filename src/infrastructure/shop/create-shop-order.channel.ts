@@ -36,6 +36,6 @@ export class CreateShopOrder extends Element {
       state.shopsState[this._shopNum].orderSended = true;
     }
 
-    this._nextElement?.entry(state, new DefaultItem());
+    this._nextElement?.entry(state);
   }
 }

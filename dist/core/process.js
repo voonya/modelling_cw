@@ -30,12 +30,12 @@ var ProcessChannel = (function (_super) {
         _this._subChannels = subChannels;
         return _this;
     }
-    ProcessChannel.prototype.entry = function (state, item) {
-        _super.prototype.entry.call(this, state, item);
+    ProcessChannel.prototype.entry = function (state) {
+        _super.prototype.entry.call(this, state);
         for (var _i = 0, _a = this._subChannels; _i < _a.length; _i++) {
             var subChannel = _a[_i];
             if (!subChannel.getIsProcessing()) {
-                subChannel.entry(state, item);
+                subChannel.entry(state);
                 return;
             }
         }
@@ -43,7 +43,7 @@ var ProcessChannel = (function (_super) {
             this._statsService.addRefusal();
             return;
         }
-        this._queue.push(item);
+        this._queue.push(1);
     };
     ProcessChannel.prototype.getNextEvent = function (state) {
         var closestTime = Infinity;
@@ -71,12 +71,11 @@ var ProcessChannel = (function (_super) {
         for (var _i = 0, _c = this._subChannels; _i < _c.length; _i++) {
             var subChannel = _c[_i];
             if (((_a = subChannel.getNextEvent(state)) === null || _a === void 0 ? void 0 : _a.time) === this._currentTime) {
-                var processedItem = subChannel.getCurrentItem();
                 subChannel.exit(state);
-                (_b = this._nextElement) === null || _b === void 0 ? void 0 : _b.entry(state, processedItem);
+                (_b = this._nextElement) === null || _b === void 0 ? void 0 : _b.entry(state);
                 if (this._queue.length > 0) {
                     var nextItem = this._queue.shift();
-                    subChannel.entry(state, nextItem);
+                    subChannel.entry(state);
                 }
             }
         }

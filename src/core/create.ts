@@ -13,6 +13,6 @@ export class CreateChannel extends Element {
     super.exit(state);
     this._nextEvent = this.createNextEvent();
 
-    this._nextElement?.entry(state, new DefaultItem());
+    this._nextElement?.entry(state);
   }
 }

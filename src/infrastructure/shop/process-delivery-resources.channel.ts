@@ -22,16 +22,14 @@ export class ProcessOrderAndDeliverResources extends Element {
     this._orderSize = orderSize;
   }
 
-  entry(state: any, item: DefaultItem): void {
-    super.entry(state, item);
+  entry(state: any): void {
+    super.entry(state);
 
     if (
       !this._isProcessing &&
       state.resourcesInWholeSaleStore >= this._orderSize
     ) {
       this._isProcessing = true;
-      this._processingItem = item;
-      //state.shopsState[this._shopNum].orderSended = false;
       state.resourcesInWholeSaleStore -= this._orderSize;
 
       this._nextEvent = this.createNextEvent();
@@ -45,7 +43,7 @@ export class ProcessOrderAndDeliverResources extends Element {
       return;
     }
 
-    this._queue.push(item);
+    this._queue.push(1);
   }
 
   exit(state: any): void {
@@ -54,7 +52,7 @@ export class ProcessOrderAndDeliverResources extends Element {
     state.shopsState[this._shopNum].resourcesInShop += this._orderSize;
     state.shopsState[this._shopNum].orderSended = false;
 
-    this._nextElement?.entry(state, this._processingItem);
+    this._nextElement?.entry(state);
 
     if (this._queue.length > 0) {
       if (state.resourcesInWholeSaleStore < this._orderSize) {
@@ -62,7 +60,6 @@ export class ProcessOrderAndDeliverResources extends Element {
       }
 
       const nextItem = this._queue.shift();
-      this._processingItem = nextItem;
       this._nextEvent = this.createNextEvent();
       this._isProcessing = true;
       state.resourcesInWholeSaleStore -= this._orderSize;
@@ -76,7 +73,6 @@ export class ProcessOrderAndDeliverResources extends Element {
       state.resourcesInWholeSaleStore >= this._orderSize
     ) {
       const nextItem = this._queue.shift();
-      this._processingItem = nextItem;
       this._nextEvent = this.createNextEvent();
       this._isProcessing = true;
       state.resourcesInWholeSaleStore -= this._orderSize;

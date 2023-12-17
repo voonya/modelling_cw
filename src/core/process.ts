@@ -7,7 +7,7 @@ import { ProcessEventFactory } from './events/process-exit.event';
 export class ProcessChannel extends Element {
   //workers: ProcessWorker[];
   _maxQueueSize: number;
-  _queue: DefaultItem[];
+  _queue: number[];
   protected _eventFactory: EventFactory;
   protected _subChannels: ProcessSubChannel[];
 
@@ -22,12 +22,12 @@ export class ProcessChannel extends Element {
     this._subChannels = subChannels;
   }
 
-  entry(state: any, item: DefaultItem): void {
-    super.entry(state, item);
+  entry(state: any): void {
+    super.entry(state);
 
     for (const subChannel of this._subChannels) {
       if (!subChannel.getIsProcessing()) {
-        subChannel.entry(state, item);
+        subChannel.entry(state);
         return;
       }
     }
@@ -45,7 +45,7 @@ export class ProcessChannel extends Element {
       return;
     }
 
-    this._queue.push(item);
+    this._queue.push(1);
   }
 
   getNextEvent(state: any): Event {
@@ -76,13 +76,12 @@ export class ProcessChannel extends Element {
     //this._isProcessing = false;
     for (const subChannel of this._subChannels) {
       if (subChannel.getNextEvent(state)?.time === this._currentTime) {
-        const processedItem = subChannel.getCurrentItem();
         subChannel.exit(state);
-        this._nextElement?.entry(state, processedItem);
+        this._nextElement?.entry(state);
 
         if (this._queue.length > 0) {
           const nextItem = this._queue.shift();
-          subChannel.entry(state, nextItem);
+          subChannel.entry(state);
         }
       }
     }

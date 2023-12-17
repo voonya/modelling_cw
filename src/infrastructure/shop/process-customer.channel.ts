@@ -18,8 +18,8 @@ export class ProcessCustomer extends Element {
     this._maxQueueSize = maxQueueSize;
   }
 
-  entry(state: any, item: DefaultItem): void {
-    super.entry(state, item);
+  entry(state: any): void {
+    super.entry(state);
 
     if (state.shopsState?.[this._shopNum]?.resourcesInShop === 0) {
       this._statsService.addRefusal();
@@ -28,7 +28,6 @@ export class ProcessCustomer extends Element {
 
     if (!this._isProcessing) {
       this._isProcessing = true;
-      this._processingItem = item;
       state.shopsState[this._shopNum].resourcesInShop -= 1;
       this._nextEvent = this.createNextEvent();
 
@@ -40,13 +39,13 @@ export class ProcessCustomer extends Element {
       return;
     }
 
-    this._queue.push(item);
+    this._queue.push(1);
   }
 
   exit(state: any): void {
     super.exit(state);
     this._isProcessing = false;
-    this._nextElement?.entry(state, this._processingItem);
+    this._nextElement?.entry(state);
 
     if (this._queue.length > 0) {
       if (state.shopsState?.[this._shopNum]?.resourcesInShop === 0) {
@@ -55,7 +54,6 @@ export class ProcessCustomer extends Element {
         return;
       }
       const nextItem = this._queue.shift();
-      this._processingItem = nextItem;
       state.shopsState[this._shopNum].resourcesInShop -= 1;
       this._nextEvent = this.createNextEvent();
       this._isProcessing = true;

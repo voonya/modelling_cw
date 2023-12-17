@@ -25,7 +25,7 @@ var createShopLine = function (shopNum) {
     ]);
     orderDelivery.setName("Order delivery | Shop ".concat(shopNum + 1));
     shopOrderCreater.setNextElement(orderDelivery);
-    var processOrderAndDeliveryResources = new process_delivery_resources_channel_1.ProcessOrderAndDeliverResources(new constant_generator_1.ConstantGenerator(5), shopNum, 300);
+    var processOrderAndDeliveryResources = new process_delivery_resources_channel_1.ProcessOrderAndDeliverResources(new constant_generator_1.ConstantGenerator(5), shopNum, 100);
     processOrderAndDeliveryResources.setName("Process order | Shop ".concat(shopNum + 1));
     orderDelivery.setNextElement(processOrderAndDeliveryResources);
     elements.push(shopOrderCreater, orderDelivery, processOrderAndDeliveryResources);

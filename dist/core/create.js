@@ -17,7 +17,6 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateChannel = void 0;
 var element_1 = require("./element");
-var default_item_1 = require("./default-item");
 var create_exit_event_1 = require("./events/create-exit.event");
 var CreateChannel = (function (_super) {
     __extends(CreateChannel, _super);
@@ -30,7 +29,7 @@ var CreateChannel = (function (_super) {
         var _a;
         _super.prototype.exit.call(this, state);
         this._nextEvent = this.createNextEvent();
-        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state, new default_item_1.DefaultItem());
+        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state);
     };
     return CreateChannel;
 }(element_1.Element));

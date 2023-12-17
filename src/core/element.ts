@@ -16,7 +16,7 @@ export abstract class Element {
 
   protected _eventFactory: EventFactory;
   protected _nextElement: Element | null;
-  protected _queue: DefaultItem[] = [];
+  protected _queue: number[] = [];
   //protected _nextElementProvider?: NextElementProvider<T>;
 
   constructor(delayGenerator: BaseNumberGenerator, eventFactory: EventFactory) {
@@ -26,7 +26,7 @@ export abstract class Element {
 
   protected countExit = 0;
 
-  entry(state: any, item: DefaultItem) {
+  entry(state: any) {
     this._statsService.addEntry();
   }
 
@@ -60,13 +60,6 @@ export abstract class Element {
     return this._eventFactory.getExitEvent(nextTime, this._name);
   }
 
-  // setNextElementProvider(
-  //   nextElementProvider: NextElementProvider,
-  // ): Element {
-  //   this._nextElementProvider = nextElementProvider;
-  //   return this;
-  // }
-
   setDelayGenerator(generator: BaseNumberGenerator): Element {
     this._delayGenerator = generator;
     return this;
@@ -91,11 +84,6 @@ export abstract class Element {
     this._currentTime = time;
   }
 
-  // setNextTime(time: number): Element {
-  //   this._timeNext = time;
-  //   return this;
-  // }
-
   getName() {
     return this._name;
   }
@@ -103,15 +91,4 @@ export abstract class Element {
   getIsProcessing() {
     return this._isProcessing;
   }
-
-  // getCurrentTime() {
-  //   return this._timeCurrent;
-  // }
-
-  // entryNextElement(exitedItem: T) {
-  //   return this._nextElementProvider?.entryNextElement(
-  //     exitedItem,
-  //     this._timeCurrent,
-  //   );
-  // }
 }

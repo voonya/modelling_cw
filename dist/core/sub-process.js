@@ -25,17 +25,13 @@ var ProcessSubChannel = (function (_super) {
         _this.setDelayGenerator(delayGenerator);
         return _this;
     }
-    ProcessSubChannel.prototype.entry = function (state, item) {
+    ProcessSubChannel.prototype.entry = function (state) {
         this._isProcessing = true;
         this._nextEvent = this.createNextEvent();
-        this._currentItem = item;
     };
     ProcessSubChannel.prototype.exit = function (state) {
         _super.prototype.exit.call(this, state);
         this._isProcessing = false;
-    };
-    ProcessSubChannel.prototype.getCurrentItem = function () {
-        return this._currentItem;
     };
     return ProcessSubChannel;
 }(element_1.Element));

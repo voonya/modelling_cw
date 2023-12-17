@@ -28,12 +28,11 @@ var ProcessOrderAndDeliverResources = (function (_super) {
         _this._orderSize = orderSize;
         return _this;
     }
-    ProcessOrderAndDeliverResources.prototype.entry = function (state, item) {
-        _super.prototype.entry.call(this, state, item);
+    ProcessOrderAndDeliverResources.prototype.entry = function (state) {
+        _super.prototype.entry.call(this, state);
         if (!this._isProcessing &&
             state.resourcesInWholeSaleStore >= this._orderSize) {
             this._isProcessing = true;
-            this._processingItem = item;
             state.resourcesInWholeSaleStore -= this._orderSize;
             this._nextEvent = this.createNextEvent();
             return;
@@ -43,7 +42,7 @@ var ProcessOrderAndDeliverResources = (function (_super) {
             state.shopsState[this._shopNum].orderSended = false;
             return;
         }
-        this._queue.push(item);
+        this._queue.push(1);
     };
     ProcessOrderAndDeliverResources.prototype.exit = function (state) {
         var _a;
@@ -51,13 +50,12 @@ var ProcessOrderAndDeliverResources = (function (_super) {
         this._isProcessing = false;
         state.shopsState[this._shopNum].resourcesInShop += this._orderSize;
         state.shopsState[this._shopNum].orderSended = false;
-        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state, this._processingItem);
+        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state);
         if (this._queue.length > 0) {
             if (state.resourcesInWholeSaleStore < this._orderSize) {
                 return;
             }
             var nextItem = this._queue.shift();
-            this._processingItem = nextItem;
             this._nextEvent = this.createNextEvent();
             this._isProcessing = true;
             state.resourcesInWholeSaleStore -= this._orderSize;
@@ -68,7 +66,6 @@ var ProcessOrderAndDeliverResources = (function (_super) {
             this._queue.length > 0 &&
             state.resourcesInWholeSaleStore >= this._orderSize) {
             var nextItem = this._queue.shift();
-            this._processingItem = nextItem;
             this._nextEvent = this.createNextEvent();
             this._isProcessing = true;
             state.resourcesInWholeSaleStore -= this._orderSize;

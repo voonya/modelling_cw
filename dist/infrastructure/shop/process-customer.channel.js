@@ -27,16 +27,15 @@ var ProcessCustomer = (function (_super) {
         _this._maxQueueSize = maxQueueSize;
         return _this;
     }
-    ProcessCustomer.prototype.entry = function (state, item) {
+    ProcessCustomer.prototype.entry = function (state) {
         var _a, _b;
-        _super.prototype.entry.call(this, state, item);
+        _super.prototype.entry.call(this, state);
         if (((_b = (_a = state.shopsState) === null || _a === void 0 ? void 0 : _a[this._shopNum]) === null || _b === void 0 ? void 0 : _b.resourcesInShop) === 0) {
             this._statsService.addRefusal();
             return;
         }
         if (!this._isProcessing) {
             this._isProcessing = true;
-            this._processingItem = item;
             state.shopsState[this._shopNum].resourcesInShop -= 1;
             this._nextEvent = this.createNextEvent();
             return;
@@ -45,14 +44,14 @@ var ProcessCustomer = (function (_super) {
             this._statsService.addRefusal();
             return;
         }
-        this._queue.push(item);
+        this._queue.push(1);
     };
     ProcessCustomer.prototype.exit = function (state) {
         var _this = this;
         var _a, _b, _c;
         _super.prototype.exit.call(this, state);
         this._isProcessing = false;
-        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state, this._processingItem);
+        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state);
         if (this._queue.length > 0) {
             if (((_c = (_b = state.shopsState) === null || _b === void 0 ? void 0 : _b[this._shopNum]) === null || _c === void 0 ? void 0 : _c.resourcesInShop) === 0) {
                 this._queue.forEach(function (el) { return _this._statsService.addRefusal(); });
@@ -60,7 +59,6 @@ var ProcessCustomer = (function (_super) {
                 return;
             }
             var nextItem = this._queue.shift();
-            this._processingItem = nextItem;
             state.shopsState[this._shopNum].resourcesInShop -= 1;
             this._nextEvent = this.createNextEvent();
             this._isProcessing = true;

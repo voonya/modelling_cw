@@ -18,7 +18,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateShopOrder = void 0;
 var element_1 = require("../../core/element");
 var create_exit_event_1 = require("../../core/events/create-exit.event");
-var default_item_1 = require("../../core/default-item");
 var CreateShopOrder = (function (_super) {
     __extends(CreateShopOrder, _super);
     function CreateShopOrder(delayGenerator, shopNum, nominalResourceCount) {
@@ -42,7 +41,7 @@ var CreateShopOrder = (function (_super) {
         if (state.shopsState[this._shopNum]) {
             state.shopsState[this._shopNum].orderSended = true;
         }
-        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state, new default_item_1.DefaultItem());
+        (_a = this._nextElement) === null || _a === void 0 ? void 0 : _a.entry(state);
     };
     return CreateShopOrder;
 }(element_1.Element));

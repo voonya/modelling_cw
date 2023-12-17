@@ -19,7 +19,7 @@ export type ModelMiddleware = (
   time: { currentTime: number; nextTime: number },
 ) => void;
 
-export class Model<T extends DefaultItem> {
+export class Model {
   elements: Element[];
   middlewares: ModelMiddleware[];
 

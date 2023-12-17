@@ -16,7 +16,7 @@ var Element = (function () {
         this._delayGenerator = delayGenerator;
         this._eventFactory = eventFactory;
     }
-    Element.prototype.entry = function (state, item) {
+    Element.prototype.entry = function (state) {
         this._statsService.addEntry();
     };
     Element.prototype.exit = function (state) {
