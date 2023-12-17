@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "lib": ["ES2023.Array"]
+  },
+  "include": ["src/**/*", "__tests__/**/*"]
+}
