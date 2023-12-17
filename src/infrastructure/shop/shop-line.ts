@@ -16,8 +16,7 @@ export const createShopLine = (shopNum: number) => {
   const createCustomerEl = new CreateChannel(new ConstantGenerator(0.1));
 
   createCustomerEl.setName(`Create customer | Shop ${shopNum + 1}`);
-
-  createCustomerEl.setNextEvent(new CreateExitEvent(0));
+  createCustomerEl.setDelayedEventsTime([0]);
 
   const processCustomer = new ProcessCustomer(
     new ConstantGenerator(0),

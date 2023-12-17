@@ -7,22 +7,32 @@ export abstract class Element {
 
   protected _currentTime = 0;
   protected _nextEvent: Event | null = null;
-  protected _delayGenerator: BaseNumberGenerator | null = null;
   protected _isProcessing = false;
-  protected _timeWorking = 0;
-  protected _statsService = new StatsService();
+  protected _queue: number[];
+  protected _delayedEvents: Event[];
 
+  protected _delayGenerator: BaseNumberGenerator | null = null;
+  protected _statsService: StatsService;
   protected _eventFactory: EventFactory;
   protected _nextElement: Element | null;
-  protected _queue: number[] = [];
-  //protected _nextElementProvider?: NextElementProvider<T>;
 
-  constructor(delayGenerator: BaseNumberGenerator, eventFactory: EventFactory) {
+  constructor(
+    delayGenerator: BaseNumberGenerator,
+    eventFactory: EventFactory,
+    statsService?: StatsService,
+  ) {
     this._delayGenerator = delayGenerator;
     this._eventFactory = eventFactory;
+    this._statsService = statsService || new StatsService();
+    this._delayedEvents = [];
+    this._queue = [];
   }
 
-  protected countExit = 0;
+  setDelayedEventsTime(times: number[]) {
+    this._delayedEvents = times.map((time) =>
+      this._eventFactory.getExitEvent(time, this._name),
+    );
+  }
 
   entry(state: any) {
     this._statsService.addEntry();
@@ -31,14 +41,20 @@ export abstract class Element {
   exit(state: any) {
     this._statsService.addExit();
     this._nextEvent = null;
+
+    if (this._nextEvent?.time != this._currentTime) {
+      this._delayedEvents = this._delayedEvents.filter(
+        (e) => e.time !== this._currentTime,
+      );
+    }
   }
 
   getNextEvent(state: any): Event {
-    return this._nextEvent;
-  }
+    const event = this._nextEvent;
 
-  setNextEvent(event: Event) {
-    this._nextEvent = event;
+    const nearestEvent = this._delayedEvents.find((e) => e.time < event?.time);
+
+    return nearestEvent ?? event;
   }
 
   calcStatistic(deltaTime: number, state: any) {
@@ -49,8 +65,8 @@ export abstract class Element {
     return this._statsService.getStats(currentTime);
   }
 
-  log() {
-    console.log(`*********${this._name}*********`);
+  updateCurrentTime(time: number) {
+    this._currentTime = time;
   }
 
   protected createNextEvent() {
@@ -58,28 +74,14 @@ export abstract class Element {
     return this._eventFactory.getExitEvent(nextTime, this._name);
   }
 
-  setDelayGenerator(generator: BaseNumberGenerator): Element {
-    this._delayGenerator = generator;
-    return this;
-  }
-
   setNextElement(element: Element): Element {
     this._nextElement = element;
-    return this;
-  }
-
-  setEventFactory(eventFactory: EventFactory): Element {
-    this._eventFactory = eventFactory;
     return this;
   }
 
   setName(name: string): Element {
     this._name = name;
     return this;
-  }
-
-  updateCurrentTime(time: number) {
-    this._currentTime = time;
   }
 
   getName() {

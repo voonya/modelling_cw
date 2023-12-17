@@ -13,12 +13,14 @@ export const createFabricLine = () => {
 
   createFarbricOrderEl.setName('Fabric Order');
 
-  const fabricProcessTimeGenerator = new TimeOrderRecieveGenerator(
-    90,
-    10,
-    60,
-    120,
-  );
+  // const fabricProcessTimeGenerator = new TimeOrderRecieveGenerator(
+  //   90,
+  //   10,
+  //   60,
+  //   120,
+  // );
+
+  const fabricProcessTimeGenerator = new ConstantGenerator(100);
 
   const fabricSubChannels = [];
 
@@ -26,12 +28,9 @@ export const createFabricLine = () => {
     fabricSubChannels.push(new ProcessSubChannel(fabricProcessTimeGenerator));
   }
 
-  const processAndDelivery = new FabricDeliveryProcess(
-    1800,
-    fabricSubChannels,
-    [30, 60, 90],
-  );
+  const processAndDelivery = new FabricDeliveryProcess(1800, fabricSubChannels);
   processAndDelivery.setName('Process and delivery fabric order');
+  processAndDelivery.setDelayedEventsTime([30, 60, 90]);
 
   createFarbricOrderEl.setNextElement(processAndDelivery);
 

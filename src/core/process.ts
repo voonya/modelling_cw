@@ -4,11 +4,8 @@ import { EventFactory, Event } from './events/base.event';
 import { ProcessEventFactory } from './events/process-exit.event';
 
 export class ProcessChannel extends Element {
-  //workers: ProcessWorker[];
-  _maxQueueSize: number;
-  _queue: number[];
-  protected _eventFactory: EventFactory;
   protected _subChannels: ProcessSubChannel[];
+  protected _maxQueueSize: number;
 
   constructor(
     subChannels: ProcessSubChannel[] = [],
@@ -31,14 +28,6 @@ export class ProcessChannel extends Element {
       }
     }
 
-    // if (this._countFreeChannels > 0) {
-    //   //this._isProcessing = true;
-    //   this._countFreeChannels--;
-    //   this._processingItem = item;
-    //   this._nextEvent = this.createNextEvent();
-    //   return;
-    // }
-
     if (this._queue.length >= this._maxQueueSize) {
       this._statsService.addRefusal();
       return;
@@ -60,7 +49,9 @@ export class ProcessChannel extends Element {
       }
     }
 
-    return closestEvent;
+    this._nextEvent = closestEvent;
+
+    return super.getNextEvent(state);
   }
 
   updateCurrentTime(time: number): void {
@@ -72,7 +63,6 @@ export class ProcessChannel extends Element {
 
   exit(state: any): void {
     super.exit(state);
-    //this._isProcessing = false;
     for (const subChannel of this._subChannels) {
       if (subChannel.getNextEvent(state)?.time === this._currentTime) {
         subChannel.exit(state);

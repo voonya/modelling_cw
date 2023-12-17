@@ -14,38 +14,15 @@ export class FabricDeliveryProcess extends ProcessChannel {
   constructor(
     orderSize: number,
     subChannels: ProcessSubChannel[] = [],
-    delayedEventsTime: number[] = [],
     maxQueueSize = Infinity,
   ) {
     super(subChannels, new FabricOrderProcessEventFactory(), maxQueueSize);
     this._statsService = new FabricDeliveryStatsService();
     this._orderSize = orderSize;
-
-    this._delayedEvents = delayedEventsTime.map((time) =>
-      this._eventFactory.getExitEvent(time, this._name),
-    );
   }
 
   exit(state: any): void {
     state.resourcesInWholeSaleStore += this._orderSize;
-
-    if (
-      !this._subChannels.some(
-        (channel) => channel.getNextEvent(state)?.time == this._currentTime,
-      )
-    )
-      this._delayedEvents = this._delayedEvents.filter(
-        (e) => e.time !== this._currentTime,
-      );
-
     super.exit(state);
-  }
-
-  getNextEvent(state: any): Event {
-    const event = super.getNextEvent(state);
-
-    const nearestEvent = this._delayedEvents.find((e) => e.time < event?.time);
-
-    return nearestEvent ?? event;
   }
 }

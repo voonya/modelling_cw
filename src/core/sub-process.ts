@@ -5,7 +5,6 @@ import { ProcessEventFactory } from './events/process-exit.event';
 export class ProcessSubChannel extends Element {
   constructor(delayGenerator: BaseNumberGenerator) {
     super(delayGenerator, new ProcessEventFactory());
-    this.setDelayGenerator(delayGenerator);
   }
 
   entry(state: any): void {
