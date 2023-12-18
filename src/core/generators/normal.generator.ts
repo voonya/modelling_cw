@@ -1,8 +1,8 @@
 import { BaseNumberGenerator } from './base.generator';
 
 export class NormalNumberGenerator extends BaseNumberGenerator {
-  private avg: number;
-  private dev: number;
+  protected avg: number;
+  protected dev: number;
 
   constructor(avg: number, dev: number) {
     super();
